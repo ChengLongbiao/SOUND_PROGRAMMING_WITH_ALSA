@@ -7,3 +7,5 @@ This project is about the sound control interface whereby there is input and out
  
 #Goals of the project
 The project will tackle main areas of the audio effects which include the following, reverb, delay pitch shift and compression
+
+https://cloud.githubusercontent.com/assets/5812481/7043048/26ad86ec-ddef-11e4-9a06-b9868c4eace1.png
