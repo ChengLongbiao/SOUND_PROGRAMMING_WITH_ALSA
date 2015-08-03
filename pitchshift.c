@@ -88,7 +88,16 @@ void smbPitchShift(float pitchShift, long numSampsToProcess, long fftFrameSize, 
 
 	/* main processing loop */
 	for (i = 0; i < numSampsToProcess; i++){
-
+		// loading
+		
+		// load the next section of data, one stepsize chunk at a time, starting at beginning of indata. the chunk gets loaded
+		// to a slot at the end of the gInFIFO, while at the same time, the chunk at the beginning of gOutFIFO gets loaded to into
+		// the outdata buffer one chunk at a time starting at the beginning.  
+		//
+		// the very first time this pitchshifter is called, the gOutFIFO will be initialized with zero's so it looks like 
+		// there will be some latency before the actual 'processed' samples begin to fill outdata.
+		//
+		
 		/* As long as we have not yet collected enough data just read in */
 		gInFIFO[gRover] = indata[i];
 		outdata[i] = gOutFIFO[gRover-inFifoLatency];
