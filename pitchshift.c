@@ -1,5 +1,10 @@
 /****************************************************************************
 *
+* NAME: smbPitchShift.cpp
+* VERSION: 1.2
+* HOME URL: http://www.dspdimension.com
+* KNOWN BUGS: none
+*
 * SYNOPSIS: Routine for doing pitch shifting while maintaining
 * duration using the Short Time Fourier Transform.
 *
@@ -35,11 +40,15 @@ double smbAtan2(double x, double y);
 
 // -----------------------------------------------------------------------------------------------------------------
 
+
+void smbPitchShift(float pitchShift, long numSampsToProcess, long fftFrameSize, long osamp, float sampleRate, float *indata, float *outdata)
 /*
+	Routine smbPitchShift(). See top of file for explanation
 	Purpose: doing pitch shifting while maintaining duration using the Short
-	Time Fourier Transform.	
+	Time Fourier Transform.
+	
 */
-void smbPitchShift(float pitchShift, long numSampsToProcess, long fftFrameSize, long osamp, float sampleRate, float *indata, float *outdata){
+{
 
 	static float gInFIFO[MAX_FRAME_LENGTH];
 	static float gOutFIFO[MAX_FRAME_LENGTH];
@@ -80,14 +89,6 @@ void smbPitchShift(float pitchShift, long numSampsToProcess, long fftFrameSize, 
 	/* main processing loop */
 	for (i = 0; i < numSampsToProcess; i++){
 
-		// loading
-		
-		// load the next section of data, one stepsize chunk at a time, starting at beginning of indata. the chunk gets loaded
-		// to a slot at the end of the gInFIFO, while at the same time, the chunk at the beginning of gOutFIFO gets loaded to into
-		// the outdata buffer one chunk at a time starting at the beginning.  
-		//		// the very first time this pitchshifter is called, the gOutFIFO will be initialized with zero's so it looks like 
-		// there will be some latency before the actual 'processed' samples begin to fill outdata.
-		//
 		/* As long as we have not yet collected enough data just read in */
 		gInFIFO[gRover] = indata[i];
 		outdata[i] = gOutFIFO[gRover-inFifoLatency];
@@ -213,7 +214,7 @@ void smbPitchShift(float pitchShift, long numSampsToProcess, long fftFrameSize, 
 
 void smbFft(float *fftBuffer, long fftFrameSize, long sign)
 /* 
-	FFT routine, Sign = -1 is FFT, 1 is iFFT (inverse)
+	FFT routine, (C)1996 S.M.Bernsee. Sign = -1 is FFT, 1 is iFFT (inverse)
 	Fills fftBuffer[0...2*fftFrameSize-1] with the Fourier transform of the
 	time domain data in fftBuffer[0...2*fftFrameSize-1]. The FFT array takes
 	and returns the cosine and sine parts in an interleaved manner, ie.
@@ -265,5 +266,39 @@ void smbFft(float *fftBuffer, long fftFrameSize, long sign)
 		}
 	}
 }
+
+
+// -----------------------------------------------------------------------------------------------------------------
+
+/*
+
+  
+    
+    PLEASE NOTE:
+    
+    There have been some reports on domain errors when the atan2() function was used
+    as in the above code. Usually, a domain error should not interrupt the program flow
+    (maybe except in Debug mode) but rather be handled "silently" and a global variable
+    should be set according to this error. However, on some occasions people ran into
+    this kind of scenario, so a replacement atan2() function is provided here.
+    
+    If you are experiencing domain errors and your program stops, simply replace all
+    instances of atan2() with calls to the smbAtan2() function below.
+    
+*/
+
+
+double smbAtan2(double x, double y)
+{
+  double signx;
+  if (x > 0.) signx = 1.;  
+  else signx = -1.;
+  
+  if (x == 0.) return 0.;
+  if (y == 0.) return signx * M_PI / 2.;
+  
+  return atan2(x, y);
+}
+
 
 
