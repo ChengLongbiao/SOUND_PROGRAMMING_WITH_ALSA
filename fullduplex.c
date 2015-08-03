@@ -197,7 +197,7 @@ int main() {
 	           									 free(rdbuf);
 	           								 break;
 
-    							case 2:
+	    							case 2:
     									smoothdelay(do it);//echo
 	    									while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 	            									if (outframes == -EAGAIN)
@@ -213,8 +213,8 @@ int main() {
 	           									 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
 	           									free(rdbuf);
 	           				        			 break;
-
-	           					case 3:
+	
+		           					case 3:
 	           							Room();
 		           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 	            									if (outframes == -EAGAIN)
@@ -231,9 +231,9 @@ int main() {
 	           									 free(rdbuf);
 	           								 break;
 
-           						case 4: 
-           							biquad();
-		           						while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
+           							case 4: 
+           								biquad();
+		           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 		            								if (outframes == -EAGAIN)
 		                							continue;
 		            							
@@ -242,12 +242,12 @@ int main() {
 		                      							restarting = 1;
 		            					
 		                			      				snd_pcm_prepare(playback_handle);
-		        						}
-		      			  				if (outframes != inframes)
+		        							}
+		      				  				if (outframes != inframes)
 		           								 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
 											 free(rdbuf);
 	           								 break;
-						}
+		 					}
         				do_something(rdbuf, inframes);
 					
       	}
@@ -256,4 +256,4 @@ int main() {
 }
   return 0;
 
-}
+}		
