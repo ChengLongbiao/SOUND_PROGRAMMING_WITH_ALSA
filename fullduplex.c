@@ -133,6 +133,7 @@ int main() {
 	        
 			return 1;
 	  	}
+		return 0;
 	}
 
 		// preocess the data
@@ -251,9 +252,6 @@ int main() {
 											 free(rdbuf);
 	           								 break;
 		 					}
-        				      	}
-
-			
-  return 0;         
+        				      	}    
 
 }		
