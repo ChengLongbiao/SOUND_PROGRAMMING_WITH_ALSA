@@ -42,106 +42,110 @@ int main() {
 
 	restarting = 1;
 
-   //setup the handles
+	   //setup the handles
 
-    int configure_alsa_audio(snd_pcm_t *device, int channels){
+    	int configure_alsa_audio(snd_pcm_t *device, int channels){
     
-    	snd_pcm_hw_params_t 	*hw_params;
-    	int err;
-    	int tmp;
-    	snd_pcm_uframes_t  frames;
-        int 		   fragments = 2;
+    		snd_pcm_hw_params_t 	*hw_params;
+    		int err;
+    		int tmp;
+    		snd_pcm_uframes_t  frames;
+        	int 		   fragments = 2;
+	
+		 /*alocate memory for hardware parameter structure*/
+  		if ((err = snd_hw_params_malloc(&hw_params)) < 0) {
+ 		   	 fprintf(stderr, "cannot allocate parameter structure (%s)\n", snd_strerror(err));
+    	
+     			return 1;
+   		}
 
- /*alocate memory for hardware parameter structure*/
-  	if ((err = snd_hw_params_malloc(&hw_params)) < 0) {
- 	   	 fprintf(stderr, "cannot allocate parameter structure (%s)\n", snd_strerror(err));
+  		//Fill structure from current audio parameters
+ 		if ((err = snd_pcm_hw_params_any(device, hw_params)) < 0){
+    			fprintf(stderr, "can not initialize parameter structure (%s)\n", snd_strerror(err));
     
-     		return 1;
-   	}
+               		return 1;
+ 		}
 
-  //Fill structure from current audio parameters
- 	if ((err = snd_pcm_hw_params_any(device, hw_params)) < 0){
-    		fprintf(stderr, "can not initialize parameter structure (%s)\n", snd_strerror(err));
-    
-               return 1;
- 	}
-
- //set access type, sample rate sample format, channels
- 	if ((err = snd_pcm_hw_params_set_access(device, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
-   		 fprintf(stderr, "can not set access type: (%s)\n", snd_strerror(err));
+ 		//set access type, sample rate sample format, channels
+ 		if ((err = snd_pcm_hw_params_set_access(device, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
+   			 fprintf(stderr, "can not set access type: (%s)\n", snd_strerror(err));
   
-    	  return 1;
-   	}
+    		 	 return 1;
+   		}	
 
- 	//bits = 16
-  	if ((err = snd_pcm_hw_params_set_format(device, hw_params, SND_PCM_FORMAT_S16_LE)) < 0) {
-     		fprintf (stderr, "cannot set sample format: (%s)\n", snd_strerror(err));
+ 		//bits = 16
+  		if ((err = snd_pcm_hw_params_set_format(device, hw_params, SND_PCM_FORMAT_S16_LE)) < 0) {
+     			fprintf (stderr, "cannot set sample format: (%s)\n", snd_strerror(err));
      
-     	     return 1;
-   	 }	
+     	     		return 1;
+   		 }	
 
   	
-	tmp = sample_rate;
+		tmp = sample_rate;
   
-	if ((err = snd_pcm_hw_params_set_rate_near(device, hw_params, &tmp, 0)) < 0) {
+		if ((err = snd_pcm_hw_params_set_rate_near(device, hw_params, &tmp, 0)) < 0) {
    			fprintf(stderr, "cannot set sample rate: (%s)\n", snd_strerror(err));
    
-   		 return 1;
- 	}
+   			 return 1;
+ 		}
 
- 	if (tmp != sample_rate) {
-    		fprintf(stderr, "could not set requested sample rate, asked for %d got %d\n", sample_rate, tmp);
-    		sample_rate = tmp;    
- 	}
+ 		if (tmp != sample_rate) {
+    			fprintf(stderr, "could not set requested sample rate, asked for %d got %d\n", sample_rate, tmp);
+    			sample_rate = tmp;    
+ 		}
 
- 	if ((err = snd_pcm_hw_params_set_channels(device, hw_params, channels)) < 0) {
-    		fprintf (stderr, "can not set channel count: %s\n", snd_strerror(err));
-   	   return 1;
-	 }
+ 		if ((err = snd_pcm_hw_params_set_channels(device, hw_params, channels)) < 0) {
+    			fprintf (stderr, "can not set channel count: %s\n", snd_strerror(err));
+   	   		
+			return 1;
+	 	}
 	
-	/*(Fragments are the number of equal-sized chunks the full audio buffer gets divided to, and alsa calls them periods.)*/ 	
+		/*(Fragments are the number of equal-sized chunks the full audio buffer gets divided to, and alsa calls them periods.)*/ 	
  
-    	if ((err = snd_pcm_hw_params_set_periods_near(device, hw_params, &fragments, 0)) < 0) {
-        	fprintf(stderr, "Error setting # fragments to %d: %s\n", fragments, snd_strerror(err));
-      	 return 1;
-    	}
-	/*convert the buffer_size variable which holds the size of a fragment, 
-	It need to be converted to frames, which are one sample data for all chanels involved, 
-	If we are in 16-bit 2-channel operation, a frame is 4 bytes wide. 
-	So, I multiply the frames with the number of fragments supported by hardware, and hope that the hardware can give me that buffer size*/
-
-    	frame_size = channels * (bits / 8);
-    	frames = buffer_size / frame_size * fragments;
-	    
-	if ((err = snd_pcm_hw_params_set_buffer_size_near(device, hw_params, &frames)) < 0) {
-	        	fprintf(stderr, "Error setting buffer_size %d frames: %s\n", frames, snd_strerror(err));
-	        return 1;
-	 }
-
-	 if (buffer_size != frames * frame_size / fragments) {
-	        fprintf(stderr, "Could not set requested buffer size, asked for %d got %d\n", buffer_size, frames * frame_size / fragments);
-	        buffer_size = frames * frame_size / fragments;
-	 }
-	  
-	   /*Setting the parameters:*/
-	 if ((err = snd_pcm_hw_params(device, hw_params)) < 0) {
-	        fprintf(stderr, "Error setting HW params: %s\n",
-	                snd_strerror(err));
-	        return 1;
-	  }
+    		if ((err = snd_pcm_hw_params_set_periods_near(device, hw_params, &fragments, 0)) < 0) {
+        		fprintf(stderr, "Error setting # fragments to %d: %s\n", fragments, snd_strerror(err));
+      	 		return 1;
+    		}
 		
+		/*convert the buffer_size variable which holds the size of a fragment, 
+		It need to be converted to frames, which are one sample data for all chanels involved, 
+		If we are in 16-bit 2-channel operation, a frame is 4 bytes wide. 
+		So, I multiply the frames with the number of fragments supported by hardware, and hope that the hardware can give me that buffer size*/
 
-	// preocess the data
+    		frame_size = channels * (bits / 8);
+    		frames = buffer_size / frame_size * fragments;
+	    
+		if ((err = snd_pcm_hw_params_set_buffer_size_near(device, hw_params, &frames)) < 0) {
+	        	fprintf(stderr, "Error setting buffer_size %d frames: %s\n", frames, snd_strerror(err));
+		
+		        return 1;
+	 	}
 
-	int  inframes, outframes;
-  	char *rdbuf;
-  	int i;
+	 	if (buffer_size != frames * frame_size / fragments) {
+	        	fprintf(stderr, "Could not set requested buffer size, asked for %d got %d\n", buffer_size, frames * frame_size / fragments);
+	        	buffer_size = frames * frame_size / fragments;
+	 	}
+	  
+	   	/*Setting the parameters:*/
+	 	if ((err = snd_pcm_hw_params(device, hw_params)) < 0) {
+	        	fprintf(stderr, "Error setting HW params: %s\n",
+	                snd_strerror(err));
+	        
+			return 1;
+	  	}
+	}
+
+		// preocess the data
+
+		int  inframes, outframes;
+  		char *rdbuf;
+  		int i;
   	
-	rdbuf = (char *)malloc(frame_size);
-	long semitones = 3; // shift up by 3 semitones
-	float pitchShift = pow(2., semitones/12.);// convert semitones to factor
+		rdbuf = (char *)malloc(frame_size);
+		long semitones = 3; // shift up by 3 semitones
+		float pitchShift = pow(2., semitones/12.);// convert semitones to factor
 
-    	while (1) {
+    		while (1) {
         		frame_size = channels * (bits / 8);
         		frames = buffer_size / frame_size;
 
@@ -172,8 +176,7 @@ int main() {
         			
 				if (inframes != frames)
             				fprintf(stderr, "Short read from capture device: %d, expecting %d\n", inframes, frames);
-            			do_something(rdbuf, inframes);
-        				/* now processes the frames */
+	       				/* now processes the frames */
 					int effects;
 					printf("Choose the sound effect you want \n1.echo\n2Pitch shift\n3.Room\n4.biquad\n5.phasor");
 						scanf("%d", &effects);
@@ -248,12 +251,9 @@ int main() {
 											 free(rdbuf);
 	           								 break;
 		 					}
-        				do_something(rdbuf, inframes);
-					
-      	}
-      
-      free(rdbuf);
-}
-  return 0;
+        				      	}
+
+			
+  return 0;         
 
 }		

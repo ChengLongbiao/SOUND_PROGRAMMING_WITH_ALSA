@@ -35,7 +35,7 @@
 #define MAX_FRAME_LENGTH 8192
 
 void smbFft(float *fftBuffer, long fftFrameSize, long sign);
-double smbAtan2(double x, double y);
+//double smbAtan2(double x, double y);
 
 
 // -----------------------------------------------------------------------------------------------------------------
