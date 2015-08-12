@@ -19,6 +19,7 @@ int main() {
 	int 		bits = 16;
 	 int 		err;
   	int 		frame_size;
+	double 		panpos//panning position of the stereo
 
 	char		*snd_device_in = "plughw:2,0";
 	char 		*snd_device_out = "plughw:2,0";
@@ -164,6 +165,7 @@ int main() {
 
 		           						case 5: 
 	           							//call streo effects
+										PANPOS thispos;
 	           								stereo();
 			           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 			            								if (outframes == -EAGAIN)
