@@ -73,7 +73,7 @@ if( pos < 1.0 || pos >1.0)
 		outframe[out_i++] = (float)(inframe[i]*thispos.right);
 	 }
 	  if (psf_sndWriteFloatFrames(ofd, outframe, framesread) != framesread{
-		printf("Error writting to outfile\n);
+		printf("Error writting to outfile\n");
 		error++;
 		break;
 	  }
