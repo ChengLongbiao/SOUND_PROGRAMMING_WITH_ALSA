@@ -41,8 +41,8 @@ int main() {
     	exit(1);
      } 
 
-     int configure_alsa_audio(snd_device_in,  nchannels);
-     int configure_alsa_audio(snd_device_out, nchannels);
+     configure_alsa_audio(snd_device_in,  nchannels);
+     configure_alsa_audio(snd_device_out, nchannels);
 
 	restarting = 1
 		// preocess the data
