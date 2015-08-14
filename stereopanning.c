@@ -8,18 +8,6 @@
 #include <alsa/asoundlib.h>
 
 
-
-//We need function that, a given parameter (in the range -1...+1), returns two values, representing the amplitude scaling factors(range 0..1)
-// for the left and right output chanells.
-typedef struct panpos{
-	double left;
-	double right;
-}PANPOS;
-
-// we can define the a panning function that return a PANPOS object:
-PANPOS sinplepan(double position);
-//
-
 PANPOS simplepan(double position){
 	PANPOS pos;
 	
@@ -69,10 +57,7 @@ if( pos < 1.0 || pos >1.0)
 		
 	thispos = simplepan(position);
 	while((framesread = psf_sndReadFloatFrames(ifd, inframes, nframes)) > 0){
-	 int i, out_i;
-	 for(i = 0; out_i = 0; i < framesread; i++){
-		outframe[out_i++] = (float)(inframe[i]*thispos.left);
-		outframe[out_i++] = (float)(inframe[i]*thispos.right);
+		 
 	 }
 	  if (psf_sndWriteFloatFrames(ofd, outframe, framesread) != framesread){
 		printf("Error writting to outfile\n");
