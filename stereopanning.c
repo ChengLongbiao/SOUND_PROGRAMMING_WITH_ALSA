@@ -1,3 +1,14 @@
+#include "interface.h"
+#define ALSA_PCM_NEW_HW_PARAMS_API
+#include <stdio.h> 
+#include <stdlib.h>
+#include <math.h> 
+#include <errno.h>
+#include <poll.h>
+#include <alsa/asoundlib.h>
+
+
+
 //We need function that, a given parameter (in the range -1...+1), returns two values, representing the amplitude scaling factors(range 0..1)
 // for the left and right output chanells.
 typedef struct panpos{
@@ -26,12 +37,6 @@ To convert the new file into a pan program, two basic processing steps are requi
 
 */
 
-/*
- In the main Add a variable called panpos(type double) to the end of the variable list at the top main
- 
- ALSO change the ENUM
- 
-*/
 enum {ARG_PROGNAME, ARG_INFILE, ARGG_OUTFILE, ARG_PANPOS, ARG_NARGS};
 //Before the call to psf_sndOpen, we need to add code to read and check the panpos argument for the correctness.
 // The interesting thing we need to check if the value lies within the legal range, so we need to compare it with two values:
@@ -58,11 +63,8 @@ if( pos < 1.0 || pos >1.0)
 	}
 	exit:
 		if(outframe) free (outframe);
-		
-		
-		//Add this to the main loop, As the function simplepan returns a PANPOS, we need a variable to receive it:
-		PANPOS thispos;  /*STAGE 1*/
-		
+
+			
 		//processing loop to do the linear panning:
 		
 	thispos = simplepan(position);
@@ -72,7 +74,7 @@ if( pos < 1.0 || pos >1.0)
 		outframe[out_i++] = (float)(inframe[i]*thispos.left);
 		outframe[out_i++] = (float)(inframe[i]*thispos.right);
 	 }
-	  if (psf_sndWriteFloatFrames(ofd, outframe, framesread) != framesread{
+	  if (psf_sndWriteFloatFrames(ofd, outframe, framesread) != framesread){
 		printf("Error writting to outfile\n");
 		error++;
 		break;
