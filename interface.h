@@ -7,6 +7,7 @@
 #include <poll.h>
 #include <alsa/asoundlib.h>
 
+enum {ARG_PROGNAME, ARG_INFILE, ARGG_OUTFILE, ARG_PANPOS, ARG_NARGS};
 //We need function that, a given parameter (in the range -1...+1), returns two values, representing the amplitude scaling factors(range 0..1)
 // for the left and right output channels.
 typedef struct panpos{

@@ -167,7 +167,7 @@ int main() {
 		           						case 5: 
 	           							//call streo effects
 										PANPOS thispos;
-	           								stereo();
+	           								thispos = simplepan(panpos);
 			           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 			            								if (outframes == -EAGAIN)
 			                							continue;
