@@ -1,4 +1,5 @@
 /* Use the newer ALSA API */
+#include "interface.h"
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <stdio.h> 
 #include <stdlib.h>
@@ -8,7 +9,7 @@
 #include <alsa/asoundlib.h>
 
 
-int configure_alsa_audio(snd_pcm_t *device, int channels);
+
 
 int main() {
 /*you locate these in a heap */
