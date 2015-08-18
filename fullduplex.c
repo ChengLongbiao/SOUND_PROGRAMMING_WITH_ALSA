@@ -29,17 +29,16 @@ int main() {
 
 	//Set the device for capture and playback
 
+		if ((err = snd_pcm_open(&capture_handle, snd_device_in, SND_PCM_STREAM_CAPTURE, 0)) < 0) {
+        	  fprintf(stderr, "cannot open input audio device %s: %s\n", snd_device_out, snd_strerror(err));
+        
+    	exit(1);
+     } 
       if ((err = snd_pcm_open(&playback_handle, snd_device_out, SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
          	 fprintf(stderr, "cannot open input audio device %s: %s\n", snd_device_in, snd_strerror(err));
          
     	 exit(1);
       }
-
-     if ((err = snd_pcm_open(&capture_handle, snd_device_in, SND_PCM_STREAM_CAPTURE, 0)) < 0) {
-        	  fprintf(stderr, "cannot open input audio device %s: %s\n", snd_device_out, snd_strerror(err));
-        
-    	exit(1);
-     } 
 
      configure_alsa_audio(snd_device_in,  nchannels);
      configure_alsa_audio(snd_device_out, nchannels);
@@ -53,7 +52,7 @@ int main() {
   	
 		rdbuf = (char *)malloc(frame_size);
 		long semitones = 3; // shift up by 3 semitones
-		float pitchShift = pow(2., semitones/12.);// convert semitones to factor
+		float pitchShift = pow(2.0, semitones/12.0);// convert semitones to factor
 
     		while (1) {
         		frame_size = channels * (bits / 8);
@@ -88,7 +87,7 @@ int main() {
 		       			/* now processes the frames */
 						
 						int effects;
-						printf("Choose the sound effect you want \n1.echo\n2Pitch shift\n3.Room\n4.biquad\n5.phasor");
+						printf("Choose the sound effect you want \n1.Pitch shift\n2.echo\n3.Room\n4.biquad\n5.stereo");
 							scanf("%d", &effects);
 
 								switch(effects){
@@ -167,7 +166,7 @@ int main() {
 		           						case 5: 
 	           							//call streo effects
 										PANPOS thispos;
-	           								thispos = simplepan(panpos);
+	           								thispos = constpower_pan(panpos);
 			           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 			            								if (outframes == -EAGAIN)
 			                							continue;
