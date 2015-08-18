@@ -16,7 +16,7 @@ typedef struct panpos{
 }PANPOS;
 
 int configure_alsa_audio(snd_pcm_t *device, int channels);
-PANPOS sinplepan(double position);// we can define the function that return a PANPOS object:
+PANPOS constpower_pan(double position);// we can define the function that return a PANPOS object:
 void smbFft(float *fftBuffer, long fftFrameSize, long sign);
 double smbAtan2(double x, double y);
 int configure_alsa_audio(snd_pcm_t *device, int channels);

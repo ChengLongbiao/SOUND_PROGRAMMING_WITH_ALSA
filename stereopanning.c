@@ -8,26 +8,19 @@
 #include <alsa/asoundlib.h>
 
 
-PANPOS simplepan(double position){
+PANPOS constpower_pan(double position){
 	PANPOS pos;
-	//Before the call to psf_sndOpen, we need to add code to read and check the panpos argument for the correctness.
-	// The interesting thing we need to check if the value lies within the legal range, so we need to compare it with two values:
+	/* pi/2: 1/4 cycle of sinusoid*/
 
-	pos = atof(argv[ARG_PANPOS]);
-
-	if( pos < 1.0 || pos > 1.0){
-		printf("Error: panpos value out of range -1 to +1 \n");
-		error++;
-		goto exit;
-	}
-	if( pos < 1.0 || pos >1.0)
-		printf("The position is between the speakers");
+	const double pi_over_two = 4.0 * atan(1.0) * 0.5;
+	const double root_two_over_two = sqrt(2.0) * 0.5;
+	/*Scale the position to fit the pi/2 range*/
+	double thispos = position * pi_over_two;
+	/*each channel uses a 1/4 of a cycle */
+	double angle = thispos * 0.5;
 	
-	
-	position *= 0.5;
-	pos.left  = position - 0.5;
-	pos.right = position + 0.5;
-	
+	pos.left = root_two_over_two * (cos(angle) - sin(angle));
+	pos.right = root_two_over_two * (cos(angle) + sin(angle));
 	return pos;
 }
 
