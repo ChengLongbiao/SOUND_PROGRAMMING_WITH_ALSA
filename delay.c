@@ -1,8 +1,4 @@
-///////////////////////////////////////////////////// 
-// delays
-//
-// (c) V Lazzarini, 2005
-//////////////////////////////////////////////////////
+
 #include "interface.h"
 #define ALSA_PCM_NEW_HW_PARAMS_API
 #include <stdio.h> 
@@ -11,7 +7,6 @@
 #include <errno.h>
 #include <poll.h>
 #include <alsa/asoundlib.h>
-
 #include <snd_defs.h>
 
 float delay(float *sig, float dtime, float *del, int *p, int vecsize, float sr){
