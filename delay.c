@@ -12,6 +12,7 @@
 float delay(float *sig, float dtime, float *del, int *p, int vecsize, float sr){
   int dt;
   float out;
+  
   dt = (int) (dtime*sr);
   for(int i=0; i < vecsize; i++){
     out = del[*p];
