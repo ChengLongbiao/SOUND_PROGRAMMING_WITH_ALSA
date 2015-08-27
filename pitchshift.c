@@ -1,6 +1,6 @@
 /****************************************************************************
 *
-* NAME: smbPitchShift.cpp
+* 
 * VERSION: 1.2
 * HOME URL: http://www.dspdimension.com
 * KNOWN BUGS: none

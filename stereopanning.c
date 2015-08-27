@@ -1,11 +1,4 @@
 #include "interface.h"
-#define ALSA_PCM_NEW_HW_PARAMS_API
-#include <stdio.h> 
-#include <stdlib.h>
-#include <math.h> 
-#include <errno.h>
-#include <poll.h>
-#include <alsa/asoundlib.h>
 
 
 PANPOS constpower_pan(double position){
@@ -25,5 +18,5 @@ PANPOS constpower_pan(double position){
 }
 
 
-const double pi = 4*atan(1.); 		
+		
 		
