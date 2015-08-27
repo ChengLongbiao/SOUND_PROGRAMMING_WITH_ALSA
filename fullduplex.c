@@ -109,28 +109,10 @@ int main() {
 		           									 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
 		           									 free(rdbuf);
 		           								 break;
-
-		    							case 2:
-		    									//call echo
-	    									smoothdelay(do it);
-		    									while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
-		            									if (outframes == -EAGAIN)
-		                								continue;
-		            									
-												fprintf(stderr, "Output buffer underrun\n");
-		            		      
-		                      								restarting = 1;
-		            					
-		                			      					snd_pcm_prepare(playback_handle);
-		        								}
-		      			  					       if (outframes != inframes)
-		           									 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
-		           									free(rdbuf);
-		           				        			 break;
 		
-			           					case 3:
-			           					//call Room effects
-		           							Room();
+			           					case 2:
+			           					//call lowpass effects
+		           							float lowpass(float* sig, float freq, float *del, int vecsize, float sr);
 			           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 		            									if (outframes == -EAGAIN)
 		                								continue;
@@ -146,9 +128,9 @@ int main() {
 		           									 free(rdbuf);
 		           								 break;
 
-	           							case 4: 
-	           							//call biquad effects
-	           								biquad();
+	           							case 3: 
+	           							//call highpass effects
+	           								float highpass(float* sig, float freq, float *del, int vecsize, float sr);
 			           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 			            								if (outframes == -EAGAIN)
 			                							continue;
@@ -164,10 +146,28 @@ int main() {
 												 free(rdbuf);
 		           								 break;
 
+		           						case 4: 
+			           							//call streo effects
+												PANPOS thispos;
+			           								thispos = constpower_pan(panpos);
+					           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
+					            								if (outframes == -EAGAIN)
+					                							continue;
+					            							
+														fprintf(stderr, "Output buffer underrun\n");
+					            		      
+					                      							restarting = 1;
+					            					
+					                			      				snd_pcm_prepare(playback_handle);
+					        							}
+					      				  				if (outframes != inframes)
+					           								 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
+														 free(rdbuf);
+				           								 break;
+
 		           						case 5: 
-	           							//call streo effects
-										PANPOS thispos;
-	           								thispos = constpower_pan(panpos);
+	           								//call balance effects
+												balance(float *sig, float *cmp, float* del, float freq, int vecsize, float sr)
 			           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 			            								if (outframes == -EAGAIN)
 			                							continue;
@@ -182,6 +182,95 @@ int main() {
 			           								 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
 												 free(rdbuf);
 		           								 break;
+
+		           						case 6: 
+			           							//call variable delay effects
+												float vdelay(float *sig, float vdtime, float maxdel,float *delay, int *p, int vecsize, float sr);
+					           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
+					            								if (outframes == -EAGAIN)
+					                							continue;
+					            							
+														fprintf(stderr, "Output buffer underrun\n");
+					            		      
+					                      							restarting = 1;
+					            					
+					                			      				snd_pcm_prepare(playback_handle);
+					        							}
+					      				  				if (outframes != inframes)
+					           								 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
+														 free(rdbuf);
+				           								 break;
+
+		           						case 7: 
+			           							//call franger effects
+												float flanger(float *sig, float vdtime, float fdb, float maxdel, float *delay, int *p, int vecsize, float sr)
+					           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
+					            								if (outframes == -EAGAIN)
+					                							continue;
+					            							
+														fprintf(stderr, "Output buffer underrun\n");
+					            		      
+					                      							restarting = 1;
+					            					
+					                			      				snd_pcm_prepare(playback_handle);
+					        							}
+					      				  				if (outframes != inframes)
+					           								 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
+														 free(rdbuf);
+				           								 break;
+
+		           						case 8: 
+			           							//allpass
+												float allpass(float *sig, float dtime, float gain,float *delay, int *p, int vecsize, float sr);
+					           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
+					            								if (outframes == -EAGAIN)
+					                							continue;
+					            							
+														fprintf(stderr, "Output buffer underrun\n");
+					            		      
+					                      							restarting = 1;
+					            					
+					                			      				snd_pcm_prepare(playback_handle);
+					        							}
+					      				  				if (outframes != inframes)
+					           								 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
+														 free(rdbuf);
+				           								 break;
+		           						case 9: 
+	           									//call comb effects
+												ffloat comb(float *sig, float dtime, float gain,float *delay, int *p, int vecsize, float sr);
+				           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
+				            								if (outframes == -EAGAIN)
+				                								continue;
+				            							
+														fprintf(stderr, "Output buffer underrun\n");
+				            		      
+				                      							restarting = 1;
+				            					
+				                			      				snd_pcm_prepare(playback_handle);
+				        							}
+				      				  				if (outframes != inframes)
+				           								 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
+													 free(rdbuf);
+			           								 break;
+
+			           					case 10: 
+			           							//call franger effects
+												float delay(float *sig, float vdtime, float fdb, float maxdel, float *delay, int *p, int vecsize, float sr)
+				           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
+				            								if (outframes == -EAGAIN)
+				                							continue;
+				            							
+													fprintf(stderr, "Output buffer underrun\n");
+				            		      
+				                      							restarting = 1;
+				            					
+				                			      				snd_pcm_prepare(playback_handle);
+				        							}
+				      				  				if (outframes != inframes)
+				           								 fprintf(stderr, "Short write to playback device: %d, expecting %d\n", outframes, frames);
+													 free(rdbuf);
+			           								 break;
 			 					}
 	        				}    
 

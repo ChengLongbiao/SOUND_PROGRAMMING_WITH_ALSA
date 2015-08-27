@@ -1,6 +1,5 @@
 #include "interface.h"
 
-
 PANPOS constpower_pan(double position){
 	PANPOS pos;
 	/* pi/2: 1/4 cycle of sinusoid*/
