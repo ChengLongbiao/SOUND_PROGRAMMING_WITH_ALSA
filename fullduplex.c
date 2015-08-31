@@ -17,12 +17,15 @@ int main() {
 	int 		restarting;
 	int		nchannels = 2;
 	int		buffer_size = 512;
-	int 		sample_rate = 48000;
+	float 		sample_rate = 48000;
 	int 		bits = 16;
 	 int 		err;
-  	int 		frame_size;
+  	long		frame_size;
 	double 		panpos//panning position of the stereo
-
+	float       *sig;
+    float 		freq; 
+    float 		*del;
+    int 		vecsize;
 	char		*snd_device_in = "plughw:2,0";
 	char 		*snd_device_out = "plughw:2,0";
 	snd_pcm_t	*playback_handle;
@@ -94,7 +97,7 @@ int main() {
 								switch(effects){
 									case 1:
 									/*call smbPitchshift*/
-										smbPitchShift(pitchShift, frames, 2048, 2,snd_pcm_readi(capture_handle, rdbuf, frames), data[0], data[0]);
+										smbPitchShift(pitchShift, frames, 2048, 4,snd_pcm_readi(capture_handle, rdbuf, frames), inframes, outframes);
 			
 		        								while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 			            								if (outframes == -EAGAIN)
@@ -112,7 +115,7 @@ int main() {
 		
 			           					case 2:
 			           					//call lowpass effects
-		           							float lowpass(float* sig, float freq, float *del, int vecsize, float sr);
+		           							float lowpass(float* sig, float freq, float *del, int vecsize, sample_rate);
 			           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 		            									if (outframes == -EAGAIN)
 		                								continue;
@@ -130,7 +133,7 @@ int main() {
 
 	           							case 3: 
 	           							//call highpass effects
-	           								float highpass(float* sig, float freq, float *del, int vecsize, float sr);
+	           								float highpass(float* sig, float freq, float *del, int vecsize, sample_rate);
 			           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 			            								if (outframes == -EAGAIN)
 			                							continue;
@@ -185,7 +188,7 @@ int main() {
 
 		           						case 6: 
 			           							//call variable delay effects
-												float vdelay(float *sig, float vdtime, float maxdel,float *delay, int *p, int vecsize, float sr);
+												float vdelay(float *sig, float vdtime, float maxdel,float *delay, int *p, int vecsize, sample_rate);
 					           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 					            								if (outframes == -EAGAIN)
 					                							continue;
@@ -203,7 +206,7 @@ int main() {
 
 		           						case 7: 
 			           							//call franger effects
-												float flanger(float *sig, float vdtime, float fdb, float maxdel, float *delay, int *p, int vecsize, float sr)
+												float flanger(float *sig, float vdtime, float fdb, float maxdel, float *delay, int *p, int vecsize, sample_rate)
 					           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 					            								if (outframes == -EAGAIN)
 					                							continue;
@@ -221,7 +224,7 @@ int main() {
 
 		           						case 8: 
 			           							//allpass
-												float allpass(float *sig, float dtime, float gain,float *delay, int *p, int vecsize, float sr);
+												float allpass(float *sig, float dtime, float gain,float *delay, int *p, int vecsize, sample_rate);
 					           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 					            								if (outframes == -EAGAIN)
 					                							continue;
@@ -238,7 +241,7 @@ int main() {
 				           								 break;
 		           						case 9: 
 	           									//call comb effects
-												ffloat comb(float *sig, float dtime, float gain,float *delay, int *p, int vecsize, float sr);
+												ffloat comb(float *sig, float dtime, float gain,float *delay, int *p, int vecsize, sample_rate);
 				           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 				            								if (outframes == -EAGAIN)
 				                								continue;
@@ -256,7 +259,7 @@ int main() {
 
 			           					case 10: 
 			           							//call franger effects
-												float delay(float *sig, float vdtime, float fdb, float maxdel, float *delay, int *p, int vecsize, float sr)
+												float delay(float *sig, float vdtime, float fdb, float maxdel, float *delay, int *p, int vecsize, sample_rate)
 				           							while ((outframes = snd_pcm_writei(playback_handle, rdbuf, inframes)) < 0) {
 				            								if (outframes == -EAGAIN)
 				                							continue;
