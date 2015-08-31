@@ -83,20 +83,3 @@ float flanger(float *sig, float vdtime, float fdb, float maxdel, float *delay, i
   return *sig;
 }
 
-float fir(float *sig, float *imp, float *del, int length, int *p, int vecsize, float sr){
-   
-  float out=0.f; int rp;
-  for(int i=0; i < vecsize; i++){
-    del[*p] = sig[i];
-    *p = (*p != length-1 ? *p+1 : 0);
-    for(int j=0; j < length; j++){
-      rp = *p+j;
-      rp = (rp < length ? rp : rp - length);  
-      out += (del[rp]*imp[length-1-j]);
-    }
-    sig[i] = out;
-    out = 0.f;
-  }
-  return *sig;
-}
-

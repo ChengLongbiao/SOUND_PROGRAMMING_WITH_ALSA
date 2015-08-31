@@ -17,15 +17,20 @@ int main() {
 	int 		restarting;
 	int		nchannels = 2;
 	int		buffer_size = 512;
-	float 		sample_rate = 48000;
+	float 		sample_rate = 48000.f;
 	int 		bits = 16;
 	 int 		err;
   	long		frame_size;
 	double 		panpos//panning position of the stereo
-	float       *sig;
-    float 		freq; 
-    float 		*del;
-    int 		vecsize;
+	float       *sig; //signal buffer
+    float 		freq = 10.f; //frequency
+    float 		*del; // delay memory
+    float 		maxdel; //max delay time
+    float 		vdtime; //variable delay time
+    float 		dtime;	//delay time
+    float 		gain;
+    float 		fdb;
+    int 		vecsize = def_vsize; //vectorsize
 	char		*snd_device_in = "plughw:2,0";
 	char 		*snd_device_out = "plughw:2,0";
 	snd_pcm_t	*playback_handle;
