@@ -40,9 +40,7 @@ typedef struct panpos{
 	double left;
 	double right;
 }PANPOS;
-
-const double pi = 4*atan(1.); 
-
+ 
 int configure_alsa_audio(snd_pcm_t *device, int channels);
 PANPOS constpower_pan(double position);// we can define the function that return a PANPOS object:
 void smbFft(float *fftBuffer, long fftFrameSize, long sign);
@@ -76,20 +74,7 @@ float highpass(float* sig, float freq, float *del, int vecsize=def_vsize,
 	 \n
 	 returns: first vector sample
 */
-float resonator(float* sig, float freq, float bw, float *del, 
-				int vecsize=def_vsize, float sr=def_sr);
 
-/** 2nd order band-pass filter (resonating)
-    
-	 sig: signal buffer \n
-	 freq: cutoff frequency \n
-	 bw: bandwidth \n
-	 del: delay memory (2 samples) \n
-	 vecsize: vector size \n
-	 sr: sampling rate \n
-	 \n
-	 returns: first vector sample
-*/
 float bandpass(float* sig, float freq, float bw, float *del, 
 			   int vecsize=def_vsize,float sr=def_sr);
 
