@@ -18,15 +18,6 @@ const float def_sr = 44100.f;
 /** default control rate
 */
 const float def_cr = def_sr/def_vsize;
-/** default audio channels.
-*/
-const int   def_chans = 1;
-/** default function table length
-*/
-const int   def_len = 1024;
-
-/** butterworth modes 
-*/
 
 /** the pi definition. 
 */ 
